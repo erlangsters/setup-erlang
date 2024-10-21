@@ -9,6 +9,7 @@
 //
 const os = require('os');
 const path = require('path');
+const fs = require('fs');
 const { execSync, execFileSync } = require('child_process');
 const core = require('@actions/core');
 const tc = require('@actions/tool-cache');
@@ -77,6 +78,8 @@ const ERLANG_VERSIONS = [
   "25.0.1",
   "25.0"
 ];
+
+const REBAR3_DOWNLOAD_URL = "https://s3.amazonaws.com/rebar3/rebar3";
 
 // Default Erlang version is the latest stable version, used when the Erlang
 // version is not specified.
@@ -244,6 +247,47 @@ async function run() {
 
     // Indicate the Erlang/OTP version that has actually been installed.
     core.setOutput('erlang-version', erlangVersion);
+
+    // Install rebar3 script if requested.
+    const installRebar3 = core.getBooleanInput('install-rebar3', {required: false});
+    if (installRebar3 === true) {
+      console.log('Installing rebar3 script...');
+
+      // Download the rebar3 script (temporary location).
+      let tmpRebar3Script = await tc.downloadTool(REBAR3_DOWNLOAD_URL);
+
+      // Create an installation directory for the rebar3 script(s).
+      const rebar3InstallDir = path.join(toolPath, `rebar`);
+      fs.mkdirSync(rebar3InstallDir);
+
+      // Move the rebar3 script to the installation directory.
+      const rebar3Script = path.join(rebar3InstallDir, 'rebar3');
+      fs.copyFileSync(tmpRebar3Script, rebar3Script);
+      fs.unlinkSync(tmpRebar3Script);
+
+      // Make the rebar3 script executable.
+      if (platform.os !== 'windows') {
+        fs.chmodSync(rebar3Script, '755');
+      }
+
+      // On Windows, an additional rebar3.cmd script must be placed alongside.
+      if (platform.os === 'windows') {
+        const rebar3CmdScriptText = `
+@echo off
+setlocal
+set rebarscript=%~f0
+escript.exe "%rebarscript:.cmd=%" %*
+        `;
+        const rebar3CmdScript = path.join(rebar3InstallDir, 'rebar3.cmd');
+        fs.writeFileSync(rebar3CmdScript, rebar3CmdScriptText.trim());
+      }
+
+      core.addPath(rebar3InstallDir);
+      console.log('The rebar3 script is installed.');
+    }
+    else {
+      console.log('Installation of rebar3 script not requested.');
+    }
   } catch (error) {
     core.setFailed(error.message);
   }
