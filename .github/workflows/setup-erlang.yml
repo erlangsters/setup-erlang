@@ -168,3 +168,19 @@ jobs:
   #       erlang-version: ${{ matrix.version }}
   #   - run: |
   #       ./client/bin/hello_world world | grep -q "Hello world!" || exit 1
+
+  test-version:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - uses: ./
+      id: setup-erlang
+      with:
+        erlang-version: 25
+    # Check if the installed version of Erlang is correct.
+    - run: |
+        if [ "${{ steps.setup-erlang.outputs.erlang-version }}" != "25.3.2.15" ]; then
+          echo "Unexpected Erlang version: ${{ steps.setup-erlang.outputs.erlang-version }}"
+          exit 1
+        fi
+        echo "Erlang version: ${{ steps.setup-erlang.outputs.erlang-version }} was installed."
