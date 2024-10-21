@@ -19,6 +19,19 @@ jobs:
     steps:
     - uses: actions/checkout@v4
     - uses: ./
+    # On Alpine, we need to install the dependencies for the Erlang runtime
+    # as they are not included in the base image.
+    - run: apk update && apk add --no-cache libstdc++ libgcc ncurses-libs
+      if: matrix.libc == 'musl'
+
+    # We also need to install the dependencies of rebar3 (compilers, curl and
+    # git).
+    - run: apt-get update && apt-get install -y autoconf gcc g++ make git curl
+      if: matrix.libc == 'glibc'
+    - run: apk add --no-cache autoconf gcc g++ make git curl
+      if: matrix.libc == 'musl'
+    - run: cd dummy-release && ./rebar3 as prod release
+    - run: cd dummy-escript && ./rebar3 escriptize
 
   build-ubuntu:
     runs-on: ubuntu-latest
@@ -30,6 +43,8 @@ jobs:
     - uses: ./
       with:
         erlang-version: ${{ matrix.version }}
+    - run: cd dummy-release && ./rebar3 as prod release
+    - run: cd dummy-escript && ./rebar3 escriptize
 
   build-macos:
     runs-on: macos-latest
@@ -41,6 +56,8 @@ jobs:
     - uses: ./
       with:
         erlang-version: ${{ matrix.version }}
+    - run: cd dummy-release && ./rebar3 as prod release
+    - run: cd dummy-escript && ./rebar3 escriptize
 
   build-windows:
     runs-on: windows-latest
@@ -52,3 +69,5 @@ jobs:
     - uses: ./
       with:
         erlang-version: ${{ matrix.version }}
+    - run: cd dummy-release && ./rebar3 as prod release
+    - run: cd dummy-escript && ./rebar3 escriptize
