@@ -1,0 +1,11 @@
+{
+    "name": "setup-erlang",
+    "license": "MIT",
+    "private": true,
+    "dependencies": {
+        "@actions/core": "^1.11.1"
+    },
+    "engines": {
+        "node": ">=20"
+    }
+}
