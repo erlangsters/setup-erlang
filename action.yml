@@ -1,8 +1,8 @@
 ---
 name: setup-erlang
 description: |
-  Set up a specific version of Erlang in your Github Actions workflow,
-  optionally with rebar3.
+  Set up a specific version of Erlang in your Github Actions workflow
+  (optionally with rebar3).
 author: Erlangsters
 branding:
   color: purple
@@ -10,6 +10,9 @@ branding:
 inputs:
   erlang-version:
     description: Version of Erlang/OTP to set up.
+outputs:
+  erlang-version:
+    description: Erlang/OTP version that was installed.
 runs:
   using: node20
   main: setup-erlang.js

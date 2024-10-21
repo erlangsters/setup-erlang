@@ -241,6 +241,9 @@ async function run() {
 
     // Add the Erlang installation path to the PATH environment variable.
     core.addPath(`${erlangInstallDir}/bin`);
+
+    // Indicate the Erlang/OTP version that has actually been installed.
+    core.setOutput('erlang-version', erlangVersion);
   } catch (error) {
     core.setFailed(error.message);
   }
