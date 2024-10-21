@@ -6,20 +6,49 @@ on:
       - master
 
 jobs:
-  build-ubuntu:
+  build-linux:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        arch: [amd64, arm64]
+        libc: [glibc, musl]
+        exclude:
+          - arch: arm64
+            libc: musl
+    container: ${{ matrix.libc == 'musl' && 'alpine:3' || 'debian:12' }}
     steps:
     - uses: actions/checkout@v4
     - uses: ./
+
+  build-ubuntu:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        version: [25, 26, 27]
+    steps:
+    - uses: actions/checkout@v4
+    - uses: ./
+      with:
+        erlang-version: ${{ matrix.version }}
 
   build-macos:
     runs-on: macos-latest
+    strategy:
+      matrix:
+        version: [25, 26, 27]
     steps:
     - uses: actions/checkout@v4
     - uses: ./
+      with:
+        erlang-version: ${{ matrix.version }}
 
   build-windows:
     runs-on: windows-latest
+    strategy:
+      matrix:
+        version: [25, 26, 27]
     steps:
     - uses: actions/checkout@v4
     - uses: ./
+      with:
+        erlang-version: ${{ matrix.version }}
