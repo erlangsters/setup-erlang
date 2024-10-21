@@ -10,6 +10,9 @@ branding:
 inputs:
   erlang-version:
     description: Version of Erlang/OTP to set up.
+  install-rebar3:
+    description: Whether to install rebar3 script.
+    default: false
 outputs:
   erlang-version:
     description: Erlang/OTP version that was installed.

@@ -169,6 +169,24 @@ jobs:
   #   - run: |
   #       ./client/bin/hello_world world | grep -q "Hello world!" || exit 1
 
+  test-rebar3:
+    strategy:
+      matrix:
+        platform: [ubuntu, macos, windows]
+    runs-on: ${{ matrix.platform }}-latest
+    steps:
+    - uses: actions/checkout@v4
+    # We remove the provided rebar3 scripts so we can test if the action
+    # actually install rebar3.
+    - run: |
+        rm dummy-release/rebar3*
+        rm dummy-escript/rebar3*
+    - uses: ./
+      with:
+        install-rebar3: true
+    - run: cd dummy-release && rebar3 as prod release
+    - run: cd dummy-escript && rebar3 escriptize
+
   test-version:
     runs-on: ubuntu-latest
     steps:
