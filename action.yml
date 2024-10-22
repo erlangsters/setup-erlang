@@ -16,6 +16,8 @@ inputs:
 outputs:
   erlang-version:
     description: Erlang/OTP version that was installed.
+  erlang-location:
+    description: The absolute path of the Erlang/OTP installation location.
 runs:
   using: node20
   main: setup-erlang.js

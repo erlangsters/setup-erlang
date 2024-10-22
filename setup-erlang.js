@@ -248,6 +248,9 @@ async function run() {
     // Indicate the Erlang/OTP version that has actually been installed.
     core.setOutput('erlang-version', erlangVersion);
 
+    // Indicate the location of the Erlang/OTP installation.
+    core.setOutput('erlang-location', erlangInstallDir);
+
     // Install rebar3 script if requested.
     const installRebar3 = core.getBooleanInput('install-rebar3', {required: false});
     if (installRebar3 === true) {
