@@ -14,9 +14,11 @@ pre-built version of Erlang/OTP accordingly.
 Additionally, you may also request the action to install the
 [rebar3](https://rebar3.org/) script.
 
-Note that the pre-built binaries used by this action are the ones maintained by
-the Erlangsters community and therefore it supports Linux, macOS and Windows.
-See the [Erlang builder](https://github.com/erlangsters/build-erlang) for more
+## Binaries provenance
+
+The pre-built binaries used by this action are the ones maintained by the
+Erlangsters community and therefore it supports Linux, macOS and Windows. See
+the [Erlang builder](https://github.com/erlangsters/build-erlang) for more
 information.
 
 ## Basic usage
