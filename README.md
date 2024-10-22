@@ -73,7 +73,7 @@ used system-wide. Most Linux distros use the "GNU C Library"; however, distros
 like Alpine use musl, which has a smaller footprint.
 
 XXX: Current limitation of Github is that the Alpine ARM64 will not accept
-     JavaScript actions. Until it's supported, this action does not support
+     JavaScript actions. Until it's supported, this action cannot support
      Linux arm64/musl.
 
 ## Dummy applications
@@ -96,3 +96,12 @@ request to that previous `/hello` endpoint. It takes the name as argument.
 You got it, they're meant to be used together to test if the applications not
 only build successfully, but also runs flawlessly (after they're distributed,
 on a different machine).
+
+## More examples
+
+Distributing cross-platform Erlang applications can be a pain. That's why
+setting up proper CI/CD from the start of your project is important.
+
+To help with this task, you can consult
+[those examples](https://github.com/erlangsters/setup-erlang-examples) which
+use this Github action, and get inspiration.
