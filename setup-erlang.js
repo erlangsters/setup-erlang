@@ -236,13 +236,20 @@ async function run() {
     const tarballName = computeTarballName(erlangVersion, platform);
     const tarballsFolder = computeTarballsFolder(erlangVersion, platform);
     const tarballLocation = `${tarballsFolder}/${tarballName}`;
+    console.log(`Computed pre-built binary URL is ${tarballLocation}`);
 
     // We download (if not already cached) the pre-built binaries and extract
     // into the installation directory.
     let toolPath = tc.find('erlang', erlangVersion, platformName);
     if (!toolPath) {
-      const tarballDownloadPath = await tc.downloadTool(tarballLocation);
-      console.log(`Downloaded Erlang/OTP to ${tarballDownloadPath}.`);
+      // Try to download the tarball from the S3 bucket.
+      let tarballDownloadPath;
+      try {
+        tarballDownloadPath = await tc.downloadTool(tarballLocation);
+        console.log(`Downloaded Erlang/OTP to ${tarballDownloadPath}.`);
+      } catch (error) {
+        throw new Error(`Failed to download Erlang/OTP tarball: ${error.message}`);
+      }
 
       const tempExtractedPath = await tc.extractTar(tarballDownloadPath);
       console.log(`Extracted Erlang/OTP to ${tempExtractedPath}.`);
