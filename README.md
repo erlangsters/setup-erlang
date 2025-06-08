@@ -1,6 +1,6 @@
-# Setup Erlang
+# Setup Erlang/OTP
 
-This repository contains a JavaScript action to setup Erlang in your Github
+This repository contains a JavaScript action to setup Erlang/OTP in your Github
 Actions workflows. It detects the platform of your runners and install a
 pre-built version of Erlang/OTP accordingly.
 
@@ -14,11 +14,14 @@ pre-built version of Erlang/OTP accordingly.
 Additionally, you may also request the action to install the
 [rebar3](https://rebar3.org/) script.
 
+Written by the Erlangsters [community](https://about.erlangsters.org/) and
+released under the MIT [license](/https://opensource.org/license/mit).
+
 ## Binaries provenance
 
 The pre-built binaries used by this action are the ones maintained by the
 Erlangsters community and therefore it supports Linux, macOS and Windows. See
-the [Erlang builder](https://github.com/erlangsters/build-erlang) for more
+the [Erlang/OTP builder](https://github.com/erlangsters/build-erlang) for more
 information.
 
 ## Basic usage
@@ -38,10 +41,10 @@ field.
 ```yaml
 - uses: erlangsters/setup-erlang@v1
   with:
-    erlang-version: 25
+    erlang-version: 27
 ```
 
-In this example, it will use the latest version 25.x that exists but you may
+In this example, it will use the latest version 27.x that exists but you may
 give an even more specific version.
 
 ## Advanced usage
@@ -59,12 +62,12 @@ The `install-rebar3` input field is optional and defaults to `false`.
 
 ## Supported platforms
 
-Like stated, it does not build Erlang and instead use pre-built binaries that
-are provided by the Erlangsters community. That implies that the supported
+Like stated, it does not build Erlang/OTP and instead use pre-built binaries
+that are provided by the Erlangsters community. That implies that the supported
 platforms derived from their policy.
 
-Erlang versions are available starting from version 25.x and are built for the
-following combination of OSes and architectures.
+Erlang/OTP versions are available starting from version 25.x and are built for
+the following combination of OSes and architectures.
 
 - Linux (amd64|arm64, glibc|musl)
 - macOS (arm64)
@@ -74,10 +77,9 @@ If you're confused about what "glibc" and "musl" are, they are the C libraries
 used system-wide. Most Linux distros use the "GNU C Library"; however, distros
 like Alpine use musl, which has a smaller footprint.
 
-XXX: Current limitation of Github is that the Alpine ARM64 will not accept
-     JavaScript actions. Until it's supported, this action cannot support
-     Linux arm64/musl.
-
+> **Note:** There is currently a limitation with GitHub Actions where Alpine ARM64
+> runners do not support JavaScript actions. Until GitHub adds this support,
+> this action cannot be used on Linux arm64/musl (Alpine) systems.
 ## Dummy applications
 
 What's with the `dummy-release/` and `dummy-escript/` folders in this
