@@ -20,7 +20,7 @@ const exec = require('@actions/exec');
 // XXX: Detection of libc must be reworked to be more robust.
 
 // By default, this is where we download the pre-built Erlang binaries.
-const S3_STORAGE_URL = 'https://storage.byteplug.io';
+const S3_STORAGE_URL = 'https://hel1.your-objectstorage.com';
 const S3_BUCKET_NAME = 'erlangsters';
 
 // The supported Erlang/OTP versions, in descending order (important!).
@@ -154,25 +154,29 @@ function detectPlatform() {
 // pre-built binaries.
 function computePlatformName(platform) {
   let osName = platform.os;
-  if (platform.os === 'linux' && platform.libc === 'musl') {
-    osName = 'linux-musl';
+  if (platform.os === 'linux') {
+    if (platform.libc === 'musl') {
+      osName = 'alpine';
+    } else {
+      osName = 'debian';
+    }
   }
   const platformName = `${osName}-${platform.arch}`;
   return platformName;
 }
 
 // The name of the tarball (which contains the pre-built binaries) follows a
-// specific format: erlang-<version>-<os>-<arch>.tar.gz
+// specific format: erlang-otp-<version>-build-<os>-<arch>.tar.gz
 function computeTarballName(version, platform) {
   const platformName = computePlatformName(platform);
-  const tarballName = `erlang-${version}-build-${platformName}.tar.gz`;
+  const tarballName = `erlang-otp-${version}-build-${platformName}.tar.gz`;
   return tarballName;
 }
 
 // The tarballs folder is where the pre-built binaries are stored in the S3
 // bucket (for a given Erlang version).
 function computeTarballsFolder(version) {
-  const tarballFolder = `${S3_STORAGE_URL}/${S3_BUCKET_NAME}/erlang/${version}`;
+  const tarballFolder = `${S3_STORAGE_URL}/${S3_BUCKET_NAME}/erlang-otp/${version}`;
   return tarballFolder;
 }
 
@@ -211,17 +215,17 @@ async function run() {
     let toolPath = tc.find('erlang', erlangVersion, platformName);
     if (!toolPath) {
       const tarballDownloadPath = await tc.downloadTool(tarballLocation);
-      console.log(`Downloaded Erlang to ${tarballDownloadPath}.`);
+      console.log(`Downloaded Erlang/OTP to ${tarballDownloadPath}.`);
 
       const tempExtractedPath = await tc.extractTar(tarballDownloadPath);
-      console.log(`Extracted Erlang to ${tempExtractedPath}.`);
+      console.log(`Extracted Erlang/OTP to ${tempExtractedPath}.`);
 
       // Cache the final installation directory
       toolPath = await tc.cacheDir(tempExtractedPath, 'erlang', erlangVersion, platform.arch);
-      console.log(`Cached Erlang to ${toolPath}`);
+      console.log(`Cached Erlang/OTP to ${toolPath}`);
 
     } else {
-      console.log(`Erlang found in cache at ${toolPath}`);
+      console.log(`Erlang/OTP found in cache at ${toolPath}`);
     }
 
     // Now we need to run the 'Install' script (so it generates the bin
