@@ -15,13 +15,14 @@ const core = require('@actions/core');
 const tc = require('@actions/tool-cache');
 const exec = require('@actions/exec');
 
-// XXX: Perhaps allow customizing wher the pre-built Erlang binaries are
+// XXX: Perhaps allow customizing where the pre-built Erlang/OTP binaries are
 //      downloaded from.
 // XXX: Detection of libc must be reworked to be more robust.
 
 // By default, this is where we download the pre-built Erlang binaries.
-const S3_STORAGE_URL = 'https://hel1.your-objectstorage.com';
+const S3_ENDPOINT_URL = 'https://hel1.your-objectstorage.com';
 const S3_BUCKET_NAME = 'erlangsters';
+const S3_PATH_PREFIX = 'erlang-otp';
 
 // The supported Erlang/OTP versions, in descending order (important!).
 const OTP_VERSIONS = [
@@ -202,7 +203,7 @@ function computeTarballName(version, platform) {
 // The tarballs folder is where the pre-built binaries are stored in the S3
 // bucket (for a given Erlang version).
 function computeTarballsFolder(version) {
-  const tarballFolder = `${S3_STORAGE_URL}/${S3_BUCKET_NAME}/erlang-otp/${version}`;
+  const tarballFolder = `${S3_ENDPOINT_URL}/${S3_BUCKET_NAME}/${S3_PATH_PREFIX}/${version}`;
   return tarballFolder;
 }
 
