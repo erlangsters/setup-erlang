@@ -24,12 +24,32 @@ const S3_STORAGE_URL = 'https://hel1.your-objectstorage.com';
 const S3_BUCKET_NAME = 'erlangsters';
 
 // The supported Erlang/OTP versions, in descending order (important!).
-const ERLANG_VERSIONS = [
+const OTP_VERSIONS = [
+  "28.0",
+  "27.3.4",
+  "27.3.3",
+  "27.3.2",
+  "27.3.1",
+  "27.3",
+  "27.2.4",
+  "27.2.3",
+  "27.2.2",
+  "27.2.1",
+  "27.2",
+  "27.1.3",
   "27.1.2",
   "27.1.1",
   "27.1",
   "27.0.1",
   "27.0",
+  "26.2.5.12",
+  "26.2.5.11",
+  "26.2.5.10",
+  "26.2.5.9",
+  "26.2.5.8",
+  "26.2.5.7",
+  "26.2.5.6",
+  "26.2.5.5",
   "26.2.5.4",
   "26.2.5.3",
   "26.2.5.2",
@@ -46,6 +66,12 @@ const ERLANG_VERSIONS = [
   "26.0.2",
   "26.0.1",
   "26.0",
+  "25.3.2.21",
+  "25.3.2.20",
+  "25.3.2.19",
+  "25.3.2.18",
+  "25.3.2.17",
+  "25.3.2.16",
   "25.3.2.15",
   "25.3.2.14",
   "25.3.2.13",
@@ -83,8 +109,8 @@ const REBAR3_DOWNLOAD_URL = "https://s3.amazonaws.com/rebar3/rebar3";
 
 // Default Erlang version is the latest stable version, used when the Erlang
 // version is not specified.
-function defaultErlangVersion() {
-  return ERLANG_VERSIONS[0];
+function defaultVersion() {
+  return OTP_VERSIONS[0];
 }
 
 // Normalize the Erlang version by finding the latest version that matches the
@@ -92,7 +118,7 @@ function defaultErlangVersion() {
 // return "25.3.2.15".
 function normalizeVersion(version) {
   const versionPrefix = version.toString();
-  const matchingVersions = ERLANG_VERSIONS.filter(v => v.startsWith(versionPrefix));
+  const matchingVersions = OTP_VERSIONS.filter(v => v.startsWith(versionPrefix));
   if (matchingVersions.length === 0) {
     throw new Error(`No matching versions found for ${version}`);
   }
@@ -187,7 +213,7 @@ async function run() {
     let erlangVersion = core.getInput('erlang-version');
     if (!erlangVersion) {
       console.log('No Erlang/OTP version specified, using the latest version.');
-      erlangVersion = defaultErlangVersion();
+      erlangVersion = defaultVersion();
     }
     else {
       console.log(`Erlang/OTP version ${erlangVersion} is requested.`);
