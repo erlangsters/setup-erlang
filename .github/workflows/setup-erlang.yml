@@ -19,6 +19,8 @@ jobs:
     steps:
     - uses: actions/checkout@v4
     - uses: ./
+      with:
+        install-rebar3: true
     # On Alpine, we need to install the dependencies for the Erlang runtime
     # as they are not included in the base image.
     - run: apk update && apk add --no-cache libstdc++ libgcc ncurses-libs
@@ -30,8 +32,8 @@ jobs:
       if: matrix.libc == 'glibc'
     - run: apk add --no-cache autoconf gcc g++ make git curl
       if: matrix.libc == 'musl'
-    - run: cd dummy-release && ./rebar3 as prod release
-    - run: cd dummy-escript && ./rebar3 escriptize
+    - run: cd dummy-release && rebar3 as prod release
+    - run: cd dummy-escript && rebar3 escriptize
 
   build-ubuntu:
     runs-on: ubuntu-latest
@@ -43,8 +45,9 @@ jobs:
     - uses: ./
       with:
         erlang-version: ${{ matrix.version }}
-    - run: cd dummy-release && ./rebar3 as prod release
-    - run: cd dummy-escript && ./rebar3 escriptize
+        install-rebar3: true
+    - run: cd dummy-release && rebar3 as prod release
+    - run: cd dummy-escript && rebar3 escriptize
     - run: |
         mv dummy-release/_build/prod/rel/hello_world server
         mkdir client
@@ -87,8 +90,9 @@ jobs:
     - uses: ./
       with:
         erlang-version: ${{ matrix.version }}
-    - run: cd dummy-release && ./rebar3 as prod release
-    - run: cd dummy-escript && ./rebar3 escriptize
+        install-rebar3: true
+    - run: cd dummy-release && rebar3 as prod release
+    - run: cd dummy-escript && rebar3 escriptize
     - run: |
         mv dummy-release/_build/prod/rel/hello_world server
         mkdir client
@@ -131,8 +135,9 @@ jobs:
     - uses: ./
       with:
         erlang-version: ${{ matrix.version }}
-    - run: cd dummy-release && ./rebar3 as prod release
-    - run: cd dummy-escript && ./rebar3 escriptize
+        install-rebar3: true
+    - run: cd dummy-release && rebar3 as prod release
+    - run: cd dummy-escript && rebar3 escriptize
 
 # XXX: This needs to be implemented. On Windows, it requires admin level to
 #      start the Erlang application.
@@ -176,11 +181,6 @@ jobs:
     runs-on: ${{ matrix.platform }}-latest
     steps:
     - uses: actions/checkout@v4
-    # We remove the provided rebar3 scripts so we can test if the action
-    # actually install rebar3.
-    - run: |
-        rm dummy-release/rebar3*
-        rm dummy-escript/rebar3*
     - uses: ./
       with:
         install-rebar3: true
