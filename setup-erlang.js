@@ -26,6 +26,9 @@ const S3_PATH_PREFIX = 'erlang-otp';
 
 // The supported Erlang/OTP versions, in descending order (important!).
 const OTP_VERSIONS = [
+  "29.0.2",
+  "29.0",
+  "28.5.0.2",
   "28.0",
   "27.3.4",
   "27.3.3",
